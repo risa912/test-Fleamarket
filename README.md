@@ -65,4 +65,3 @@ php artisan storage:link
 - 開発環境：http://localhost/
 - phpMyAdmin:：http://localhost:8080/
 
-# auto_mogitate
