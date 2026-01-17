@@ -128,7 +128,7 @@
     }
 }
 
-@media screen and (min-width: 1400px) and (max-width: 1500px) {
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
     .profileEdit-form__form {
         padding: 0;
     }

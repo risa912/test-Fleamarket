@@ -3,7 +3,7 @@
 ## 環境構築
 **Dockerビルド**
 1. `git@github.com:risa912/test-Fleamarket.git`
-2. cd coachtech-Checktest-mogitate
+2. cd coachtech/fleamaeket
 3. DockerDesktopアプリを立ち上げる 
 4. Docker コンテナの起動（初回はビルド）
 ```bash
@@ -33,7 +33,8 @@ DB_USERNAME=laravel_user
 DB_PASSWORD=laravel_pass
 ```
 
-5. .envに以下のメール設定（MailHog）
+### メール送信確認（MailHog）
+1. .envに以下のメール設定（MailHog）
 ``` text
 MAIL_MAILER=smtp
 MAIL_HOST=mailhog
@@ -45,12 +46,13 @@ MAIL_FROM_ADDRESS="hello@example.com"
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-6. .envに以下のStripe（決済）設定（テスト環境）
+## Stripe（決済機能）設定
+1. .envに以下のStripe（決済）設定（テスト環境）
 ``` text
 STRIPE_KEY=pk_test_xxxxxxxxxxxxx
 STRIPE_SECRET=sk_test_xxxxxxxxxxxxx
 ```
-7. docker-compose.ymlに以下の設定を追加 （MailHog）
+2. docker-compose.ymlに以下の設定を追加 （MailHog）
 ``` text
 mailhog:
         image: mailhog/mailhog
@@ -59,7 +61,7 @@ mailhog:
             - "8025:8025"
 ```
 
-8. config/services.php の設定
+3. config/services.php の設定
 ```text
 'stripe' => [
     'key' => env('STRIPE_KEY'),
@@ -67,27 +69,60 @@ mailhog:
 ],
 ```
 
-9. Laravel の設定キャッシュをクリア
+### Stripe 利用のための PHP 拡張設定（bcmath）
+1. Dockerfileを以下の内容で修正。
+``` text
+FROM php:8.1-fpm
+
+COPY php.ini /usr/local/etc/php/
+
+RUN apt update \
+    && apt install -y default-mysql-client zlib1g-dev libzip-dev unzip \
+    && docker-php-ext-install pdo_mysql zip bcmath
+
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+    && composer self-update
+
+WORKDIR /var/www
+```
+
+2. 以下のコマンドを実行してコンテナを再ビルド
+` docker-compose down` 
+` docker-compose build --no-cache` 
+` docker-compose up -d` 
+
+3. bcmath 有効化の確認
+` docker-compose exec php bash` 
+` php -m | grep bcmath` 
+
+`bcmath` が表示されれば成功です。
+
+4. Stripe SDK のインストール
+` composer require stripe/stripe-php` をインストール
+
+## Laravel 初期化
+1. Laravel の設定キャッシュをクリア
 ``` bash
 php artisan config:clear
 ```
 
-10. アプリケーションキーの作成
+2. アプリケーションキーの作成
 ``` bash
 php artisan key:generate
 ```
 
-11. マイグレーションの実行
+3. マイグレーションの実行
 ``` bash
 php artisan migrate
 ```
 
-12. シーディングの実行
+4. シーディングの実行
 ``` bash
 php artisan db:seed
 ```
 
-13. シンボリックリンク作成
+5. シンボリックリンク作成
 ``` bash
 php artisan storage:link
 ```
@@ -96,6 +131,10 @@ php artisan storage:link
 - PHP8.4.11
 - Laravel8.83.29
 - MySQL8.0.43
+- Docker / Docker Compose
+- MailHog（メール送信確認）
+- Laravel Fortify（認証機能）
+- Stripe（テスト環境）
 
 ## テーブル設計
 ![alt](ファイル名.png)

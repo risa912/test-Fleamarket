@@ -60,7 +60,7 @@
     text-decoration: none;
 }
 
-@media screen and (min-width: 1400px) and (max-width: 1500px) {
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
     .login-form__label {
         font-size: 20px;
     }
