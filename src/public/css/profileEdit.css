@@ -1,0 +1,143 @@
+.profileEdit-form__inner {
+    display: flex;
+    justify-content: center;
+    margin-top: 48px;
+}
+
+/* フォーム */
+.profileEdit-form {
+    margin: 0 auto;
+    padding: 30px 15px;
+}
+
+.profileEdit-form__form {
+    padding: 30px 60px;
+    width: 40vw;
+    border-radius: 8px;
+}
+
+@media screen and (max-width: 1200px) {
+    .profileEdit-form__form {
+        width: 60vw;
+    }
+}
+
+.profileEdit-form__group {
+    margin-bottom: 32px;
+}
+
+.profileEdit-form__label {
+    display: block;
+    margin-bottom: 8px;
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.profileEdit-form__input {
+    display: block;
+    padding: 8px 12px;
+    width: 100%;
+    height: 48px;
+    border: 1px solid #5F5F5F;
+    color: #5F5F5F;
+}
+
+.profileEdit-form__file {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    /* ラベルとの間隔 */
+}
+
+.profileEdit-form__before {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #D9D9D9;
+    margin-bottom: 12px;
+}
+
+.profileEdit-form__file-label {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    color: #FF5555;
+    border: 1px solid #FF5555;
+    border-radius: 10px;
+    opacity: 1;
+    border-width: 2px;
+    padding: 10px 30px;
+    height: 45px;
+}
+
+.profileEdit-form__preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+    display: none;
+    overflow: hidden;
+}
+
+.profileEdit-form__preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+}
+
+.profileEdit-form__image-input {
+    display: none;
+}
+
+.profileEdit__image-before {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+}
+
+.profileEdit-form__error-message {
+    color: #FF5555;
+    margin-top: 8px;
+}
+.profileEdit-form__btn-inner {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.profileEdit-form__btn {
+    width: 100%;
+}
+
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .profileEdit-form__heading {
+        font-size: 32px;
+    }
+
+    .profileEdit-form__file-label {
+        font-size: 16px;
+    }
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1500px) {
+    .profileEdit-form__form {
+        padding: 0;
+    }
+    .profileEdit-form__label {
+        font-size: 20px;
+    }
+
+    .profileEdit-form__btn {
+        padding: 10px 32px;
+        font-size: 18px;
+    }
+}

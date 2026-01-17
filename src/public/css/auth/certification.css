@@ -1,0 +1,56 @@
+.content {
+    align-items: center;
+}
+
+/* フォーム */
+.certification-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+}
+
+.certification-form__form {
+    padding: 30px 60px;
+    width: 40vw;
+    border-radius: 8px;
+}
+
+@media screen and (max-width: 1200px) {
+    .certification-form__form {
+        width: 60vw;
+    }
+}
+
+.certification-form__text {
+    font-family: Inter;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 30px;
+    text-align: center;
+
+}
+
+.certification-form__btn-inner {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.certification-form__btn {
+    background-color: #D9D9D9;
+    color: #000000;
+    border: 1px solid #000000;
+    border-radius: 10px;
+    text-align: center;
+    display: block;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 10px 20px;
+    display: inline-block;
+}
+
+.certification-form__next-btn {
+    display: block;
+    margin: 60px auto 0;
+    color: #0073CC;
+}

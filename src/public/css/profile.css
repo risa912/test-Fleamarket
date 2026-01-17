@@ -1,0 +1,153 @@
+/* フォーム */
+.profile-form {
+    margin: 48px auto 0;
+    padding: 30px 15px;
+}
+
+.profile-form__form {
+    padding: 30px 60px;
+    border-radius: 8px;
+}
+
+.profile-form__file {
+    display: flex;
+    align-items: center;
+    gap: 45px;
+    justify-content: space-between;
+}
+
+.profile-form__before {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #D9D9D9;
+    margin-bottom: 12px;
+}
+
+.profile-form__link {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    color: #FF5555;
+    border: 1px solid #FF5555;
+    border-radius: 10px;
+    opacity: 1;
+    border-width: 2px;
+    padding: 10px 30px;
+    height: 45px;
+}
+
+.profile-form__image-input {
+    display: none;
+}
+
+.profile-form__user {
+    font-weight: 700;
+    font-size: 36px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.profile-form__preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 12px;
+    display: none;
+    overflow: hidden;
+}
+
+.profile-form__preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+}
+
+.profileEdit-form__image-input {
+    display: none;
+}
+
+.profileEdit__image-before {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #ccc;
+    margin-bottom: 12px;
+}
+
+.item-group {
+    margin-top: 70px;
+}
+
+.item-tittle {
+    display: flex;
+    gap: 40px;
+    position: relative;
+    padding-bottom: 18px;
+}
+
+.item-tittle::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-bottom: 2px solid #5F5F5F;
+}
+
+.item-sell,
+.item-buy {
+    font-weight: 700;
+    font-size: 18px;
+    cursor: pointer;
+    color: #5F5F5F;
+}
+
+.item-tab.active {
+    color: #FF5555;
+}
+
+.item-contents {
+    display: flex;
+    flex-wrap: wrap;
+    width: 900px;
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.item-content {
+    margin: 3px;
+    width: 270px;
+    position: relative;
+}
+
+.item-img__before {
+    width: 250px;
+    height: 240px;
+    background-color: #D9D9D9;
+    position: relative;
+}
+
+.item-img__before::after {
+    content: '商品画像';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 400;
+    font-size: 30px;
+    text-align: center;
+}
+
+.item-name {
+    font-weight: 400;
+    font-size: 20px;
+}

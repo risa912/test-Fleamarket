@@ -15,3 +15,9 @@ yarn-error.log
 /docker/mysql/data/
 /docker/mysql/logs/
 docker/mysql/data/
+
+# Laravel runtime files (DO NOT COMMIT)
+src/storage/framework/cache/*
+src/storage/framework/sessions/*
+src/storage/framework/views/*
+src/storage/logs/*

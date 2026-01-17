@@ -4,8 +4,11 @@
 **Dockerビルド**
 1. `git@github.com:risa912/test-Fleamarket.git`
 2. cd coachtech-Checktest-mogitate
-3. DockerDesktopアプリを立ち上げる
-4. `docker-compose up -d --build`
+3. DockerDesktopアプリを立ち上げる 
+4. Docker コンテナの起動（初回はビルド）
+```bash
+docker-compose up -d --build
+```
 
 > *MacのM1・M2チップのPCの場合、`no matching manifest for linux/arm64/v8 in the manifest list entries`のメッセージが表示されビルドができないことがあります。
 エラーが発生する場合は、docker-compose.ymlファイルの「mysql」内に「platform」の項目を追加で記載してください*
@@ -29,22 +32,62 @@ DB_DATABASE=laravel_db
 DB_USERNAME=laravel_user
 DB_PASSWORD=laravel_pass
 ```
-5. アプリケーションキーの作成
+
+5. .envに以下のメール設定（MailHog）
+``` text
+MAIL_MAILER=smtp
+MAIL_HOST=mailhog
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+6. .envに以下のStripe（決済）設定（テスト環境）
+``` text
+STRIPE_KEY=pk_test_xxxxxxxxxxxxx
+STRIPE_SECRET=sk_test_xxxxxxxxxxxxx
+```
+7. docker-compose.ymlに以下の設定を追加 （MailHog）
+``` text
+mailhog:
+        image: mailhog/mailhog
+        ports:
+            - "1025:1025"
+            - "8025:8025"
+```
+
+8. config/services.php の設定
+```text
+'stripe' => [
+    'key' => env('STRIPE_KEY'),
+    'secret' => env('STRIPE_SECRET'),
+],
+```
+
+9. Laravel の設定キャッシュをクリア
+``` bash
+php artisan config:clear
+```
+
+10. アプリケーションキーの作成
 ``` bash
 php artisan key:generate
 ```
 
-6. マイグレーションの実行
+11. マイグレーションの実行
 ``` bash
 php artisan migrate
 ```
 
-7. シーディングの実行
+12. シーディングの実行
 ``` bash
 php artisan db:seed
 ```
 
-8. シンボリックリンク作成
+13. シンボリックリンク作成
 ``` bash
 php artisan storage:link
 ```
