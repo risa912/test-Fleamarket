@@ -23,8 +23,9 @@ class CreateController extends Controller
     {
         $data = $request->validated();
 
+        // ★ 正解：storage を付けない
         $path = $request->file('image')->store('items', 'public');
-        $data['image'] = 'storage/' . $path;
+        $data['image'] = $path;
 
         // 任意項目
         $data['brand'] = $request->brand ?? '';

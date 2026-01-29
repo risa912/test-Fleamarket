@@ -11,6 +11,9 @@
         <div class="purchase-left">
             <div class="purchase-item">
                 <div class="image-box">
+                    @if($item->purchases->count() > 0)
+                        <span class="sold-label">Sold</span>
+                    @endif
                    <img src="{{ asset('storage/' . $item->image) }}" alt="商品画像"class="purchase-img">
                 </div>
                 <div class="purchase-item__info">
@@ -41,24 +44,20 @@
             </section>
 
             <section class="purchase-box">
-                <h3 class="purchase-box__tittle">配送先
+                <h3 class="purchase-box__tittle">
+                    配送先
                     <a class="purchase-link" href="{{ route('address.edit', $item->id) }}">
                         変更する
                     </a>
                 </h3>
 
-                @if($profile)
-                    <p class="postal-code">
-                        〒 {{ $profile->postal_code }}
-                    </p>
-                    <p class="address-text">
-                        {{ $profile->address }}
-                        {{ $profile->building }}
-                    </p>
-                @else
-                    <p class="postal-code">〒 未登録</p>
-                    <p class="address-text">住所未登録</p>
-                @endif
+                <p class="postal-code">
+                    〒 {{ $address['postal_code'] ?? '未登録' }}
+                </p>
+                <p class="address-text">
+                    {{ $address['address'] ?? '住所未登録' }}
+                    {{ $address['building'] ?? '' }}
+                </p>
             </section>
             <p class="purchase__error-message">
                 @error('address')

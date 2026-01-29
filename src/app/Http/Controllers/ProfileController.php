@@ -5,16 +5,30 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests\ProfileRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Item;
 
 class ProfileController extends Controller
 {
 
-     public function index()
+    public function index(Request $request)
     {
         $user = Auth::user()->load('profile');
-        return view('profile', compact('user'));
-    }
 
+        $page = $request->query('page', 'sell'); // デフォルトは sell
+
+        if ($page === 'buy') {
+            // 購入した商品一覧
+            $items = Item::whereHas('purchases', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            })->get();
+        } else {
+            // 出品した商品一覧
+            $items = Item::where('user_id', $user->id)->get();
+        }
+
+        return view('profile', compact('user', 'items', 'page'));
+    }
+    
     public function edit()
     {
 

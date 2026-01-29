@@ -14,9 +14,6 @@ use Illuminate\Http\Request;
 Route::get('/', [ItemController::class, 'index'])->name('index');
 Route::get('/mylist', [ItemController::class, 'indexMylist'])->name('index.mylist');
 
-
-Route::get('/search', [CommonController::class, 'search'])->name('search');
-
 // 登録画面
 Route::get('/register', function () {
     return view('auth.register');
@@ -72,8 +69,16 @@ Route::middleware(['auth'])->group(function () {
 
 // 商品詳細ページ
 Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
+
+// コメント投稿
+Route::post('/items/{item}/comment', [ItemController::class, 'storeComment'])
+    ->name('items.comment')
+    ->middleware('auth');
+
 // コメント・いいね
-Route::post('/items/{item}', [ItemController::class, 'update'])->name('items.update');
+Route::post('/items/{item}/like', [ItemController::class, 'toggleLike'])
+    ->name('items.like')
+    ->middleware('auth');
 
 
 Route::middleware('auth')->group(function () {

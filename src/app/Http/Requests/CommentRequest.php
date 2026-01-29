@@ -13,6 +13,11 @@ class CommentRequest extends FormRequest
 
     public function rules(): array
     {
+        // いいね操作のときはバリデーションしない
+        if ($this->has('like')) {
+            return [];
+        }
+
         return [
             'comment' => ['required', 'string', 'max:255'],
         ];

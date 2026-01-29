@@ -6,27 +6,26 @@
 
 @section('content')
 <div class="top-form">
-    <form class="top-form__form" action=""  method="">
-        @csrf
-        <div class="top-group">
-            <div class="top-title">
-                <a href="{{ url('/?tab=all') }}"
+    <div class="top-group">
+        <div class="top-title">
+            <a href="{{ url('/?tab=all&keyword=' . request('keyword')) }}"
                 class="top-tab {{ $tab === 'all' ? 'active' : '' }}">
-                    おすすめ
-                </a>
+                おすすめ
+            </a>
 
-                <a href="{{ url('/?tab=mylist') }}"
+            <a href="{{ url('/?tab=mylist&keyword=' . request('keyword')) }}"
                 class="top-tab {{ $tab === 'mylist' ? 'active' : '' }}">
-                    マイリスト
-                </a>
-            </div>
+                マイリスト
+            </a>
+        </div>
 
-            <div class="top-contents">
-                @foreach ($items as $item)
+        <div class="top-contents">
+            @foreach ($items as $item)
                 <a href="{{ route('items.show', $item) }}" class="top-link">
                     <div class="top-content">
-                        <div class="top-img__before"></div>
-
+                        @if($item->purchases->count() > 0)
+                            <span class="sold-label">Sold</span>
+                        @endif
                         <img src="{{ asset('storage/' . $item->image) }}" alt="商品画像"class="top-img">
                         <div class="name-content">
                             <p class="top-name">
@@ -35,10 +34,9 @@
                         </div>
                     </div>
                 </a>
-                @endforeach
-            </div>
-
+            @endforeach
         </div>
-    </form>
+
+    </div>
 </div>
 @endsection

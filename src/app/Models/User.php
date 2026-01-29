@@ -15,7 +15,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = ['password', 'remember_token'];
     protected $casts = ['email_verified_at' => 'datetime', 'password' => 'hashed'];
 
-    // ← ここを追加
+
     public function profile()
     {
         return $this->hasOne(Profile::class);
@@ -23,7 +23,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function likedItems()
     {
-        // ItemLike モデルを通して Item を取得
         return $this->belongsToMany(Item::class, 'item_likes', 'user_id', 'item_id');
     }
 

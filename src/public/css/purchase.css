@@ -131,6 +131,43 @@
     font-weight: 700;
 }
 
+.purchase-form__btn--purchase {
+    display: block;
+    padding: 8px 32px;
+    border: none;
+    background-color: #FF5555;
+    font-weight: 700;
+    font-size: 20px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.purchase-link {
+    text-decoration: none;
+}
+
+.purchase-form__error-message {
+    color: #FF5555;
+    margin-top: 8px;
+}
+
+.sold-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: #fff;
+    font-weight: bold;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 10;
+}
+
+.image-box {
+    position: relative;
+}
+
 @media screen and (min-width: 768px) and (max-width: 850px) {
     .purchase-form {
         gap: 40px;

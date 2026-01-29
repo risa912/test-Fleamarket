@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Condition;
+use App\Models\ItemLike;
 
 class Item extends Model
 {
@@ -38,6 +39,11 @@ class Item extends Model
     public function condition()
     {
         return $this->belongsTo(Condition::class);
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
     }
 }
 

@@ -20,7 +20,7 @@
 
             @if(!Request::is('login') && !Request::is('register'))
             <div class="header__nav">
-              <form class="header__search" action="{{ route('search') }}" method="GET">
+              <form class="header__search" action="{{ url('/') }}" method="GET">
                 @csrf
                 <input class="header__search-input" type="text" name="keyword" placeholder="なにをお探しですか？" value="{{ request('keyword') }}">
               </form>

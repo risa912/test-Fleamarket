@@ -18,28 +18,43 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         $tab = $request->get('tab', 'all');
+        $keyword = $request->get('keyword');
 
         if ($tab === 'mylist') {
-            // ★ 設計書どおり indexMylist に処理委譲
-            return $this->indexMylist();
+            return $this->indexMylist($request);
         }
 
-        $items = Item::with(['condition', 'categories'])->get();
-        $tab = 'all';
+        $items = Item::with(['condition', 'categories'])
+            // 自分の商品を除外
+            ->when(auth()->check(), function ($query) {
+                $query->where(function ($q) {
+                    $q->where('user_id', '!=', auth()->id())
+                    ->orWhereNull('user_id');
+                });
+            })
+            // 🔍 商品名の部分一致検索
+            ->when($keyword, function ($query) use ($keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%');
+            })
+            ->get();
 
         return view('index', compact('items', 'tab'));
     }
 
     // 商品一覧（マイリスト）※ 設計書で「必要」
-    public function indexMylist()
+    public function indexMylist(Request $request)
     {
-        // 未ログイン or 未認証 → 何も表示しない
+        $keyword = $request->get('keyword');
+
         if (!auth()->check() || !auth()->user()->hasVerifiedEmail()) {
             $items = collect();
         } else {
             $items = auth()->user()
                 ->likedItems()
                 ->with(['condition', 'categories'])
+                ->when($keyword, function ($query) use ($keyword) {
+                    $query->where('name', 'like', '%' . $keyword . '%');
+                })
                 ->get();
         }
 
@@ -58,32 +73,44 @@ class ItemController extends Controller
             'likes',
         ]);
 
-        return view('show', compact('item'));
+        $hasLiked = false;
+
+        if (auth()->check()) {
+            $hasLiked = $item->likes()
+                ->where('user_id', auth()->id())
+                ->exists();
+        }
+
+        return view('show', compact('item', 'hasLiked'));
     }
 
     // いいね・コメント（認証必須）
-
-    public function update(CommentRequest $request, Item $item)
+    public function toggleLike(Item $item)
     {
         $user = auth()->user();
 
-        if ($request->filled('comment')) {
-            $item->comments()->create([
-                'user_id' => $user->id,
-                'comment' => $request->comment,
+        $like = $item->likes()
+            ->where('user_id', $user->id)
+            ->first();
+
+        if ($like) {
+            $like->delete();
+        } else {
+            $item->likes()->create([
+                'user_id' => $user->id
             ]);
         }
 
-        if ($request->has('like')) {
-            $like = $item->likes()->where('user_id', $user->id)->first();
+        return back();
+    }
 
-            if ($like) {
-                $like->delete();
-            } else {
-                $item->likes()->create(['user_id' => $user->id]);
-            }
-        }
+    public function storeComment(CommentRequest $request, Item $item)
+    {
+        $item->comments()->create([
+            'user_id' => auth()->id(),
+            'comment' => $request->comment,
+        ]);
 
-        return redirect()->route('items.show', $item);
+        return back();
     }
 }

@@ -91,6 +91,7 @@
     width: 45px;
 }
 
+
 .reaction-count {
     display: block;
     font-size: 14px;
@@ -170,13 +171,6 @@
     align-items: center;
 }
 
-/* .user-icon {
-    width: 70px;
-    height: 70px;
-    background: #ccc;
-    border-radius: 50%;
-} */
-
 .user-name {
     font-weight: bold;
     margin-bottom: 4px;
@@ -222,6 +216,24 @@
 .show-form__error-message {
     color: #FF5555;
     margin-top: 8px;
+}
+
+.sold-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background-color: rgba(255, 0, 0, 0.8);
+    color: #fff;
+    font-weight: bold;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 4px;
+    z-index: 10;
+}
+
+.image-box {
+    position: relative;
+    /* sold-labelを画像の上に表示するため */
 }
 
 @media screen and (min-width: 768px) and (max-width: 850px) {

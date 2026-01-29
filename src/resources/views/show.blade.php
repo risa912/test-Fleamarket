@@ -7,6 +7,9 @@
 @section('content')
 <div class="show">
     <div class="image-box">
+        @if($item->purchases->count() > 0)
+            <span class="sold-label">Sold</span>
+        @endif
         <img src="{{ asset('storage/' . $item->image) }}"
             alt="商品画像"
             class="show-img">
@@ -20,26 +23,22 @@
             
             <div class="reaction">
                 <div class="reaction-item">
-                    <form action="{{ route('items.update', $item->id) }}" method="post" class="like-form">
+                    <form action="{{ route('items.like', $item) }}" method="post" class="like-form">
                         @csrf
-                        @php
-                            $hasLiked = auth()->check() && $item->likes->contains('user_id', auth()->id());
-                        @endphp
-
-                        <button type="submit" name="like" value="1" class="like-button">
-                            <img class="like__img" 
-                                src="{{ $hasLiked ? asset('images/Vector.png') : asset('images/icon_heart_.svg') }}" 
-                                alt="いいね">
+                        <button type="submit" class="like-button">
+                            <img class="like__img" src="{{ $hasLiked ? asset('images/Vector.png') : asset('images/icon_heart.svg') }}" alt="いいね">
                             <span class="reaction-count">{{ $item->likes->count() }}</span>
                         </button>
                     </form>
                 </div>
-                <div class="reaction-item">
+                <form action="{{ route('items.comment', $item) }}" method="post">
+                    <div class="reaction-item">
                     <img class="comment__img" src="{{ asset('images/icon_comment_.svg') }}" alt="コメント">
                     <span class="reaction-count reaction-count--comment">
                         {{ $item->comments->count() }}
                     </span>
                 </div>
+                </form>
             </div>
 
             <button class="show-form__btn show-form__btn--purchase"><a class="show-link" href="{{ route('purchase.create', $item->id) }}">購入手続きへ</a></button>
@@ -85,7 +84,7 @@
 
             <section class="section section--another">
                 <h2 class="section-tittle section-tittle--another">商品へのコメント</h2>
-               <form action="{{ route('items.update', $item->id) }}" method="post">
+               <form action="{{ route('items.comment', $item->id) }}" method="post">
                     @csrf
                     <div class="show-form__group">
                         <textarea class="show-form__textarea" name="comment" cols="30"

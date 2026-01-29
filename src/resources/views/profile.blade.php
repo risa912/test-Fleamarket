@@ -31,63 +31,32 @@
 
         <div class="item-group">
             <div class="item-tittle">
-                <p class="item-sell" name="item-sell">出品した商品</p>
-                <p class="item-buy" name="item-buy">購入した商品</p>
+                <a href="{{ route('mypage', ['page' => 'sell']) }}" class="tab-link {{ $page === 'sell' ? 'active' : '' }}">
+                出品した商品
+                </a>
+
+                <a href="{{ route('mypage', ['page' => 'buy']) }}" class="tab-link {{ $page === 'buy' ? 'active' : '' }}">
+                購入した商品
+                </a>
             </div>
             <div class="item-contents">
-                <div class="item-content">
-                    <a href="" class="item-link"></a>
-                    <div class="item-img__before"></div>
-                    <img src="asset" alt="商品画像" class="img-content" />
-                    <div class="detail-content">
-                        <p class="item-name">商品名</p>
-                    </div>
-                </div>
+                @foreach($items as $item)
+                    <div class="item-content">
+                        <a href="{{ route('items.show', $item) }}" class="item-link">
+                            @if($item->purchases->count() > 0)
+                                <span class="sold-label">Sold</span>
+                            @endif
 
-                <div class="item-content">
-                    <a href="" class="item-link"></a>
-                    <div class="item-img__before"></div>
-                    <img src="asset" alt="商品画像" class="img-content" />
-                    <div class="detail-content">
-                        <p class="item-name">商品名</p>
-                    </div>
-                </div>
+                            <img src="{{ asset('storage/' . $item->image) }}"
+                                alt="商品画像"
+                                class="img-content" />
 
-                <div class="item-content">
-                    <a href="" class="item-link"></a>
-                    <div class="item-img__before"></div>
-                    <img src="asset" alt="商品画像" class="img-content" />
-                    <div class="detail-content">
-                        <p class="item-name">商品名</p>
+                            <div class="detail-content">
+                                <p class="item-name">{{ $item->name }}</p>
+                            </div>
+                        </a>
                     </div>
-                </div>
-
-                <div class="item-content">
-                    <a href="" class="item-link"></a>
-                    <div class="item-img__before"></div>
-                    <img src="asset" alt="商品画像" class="img-content" />
-                    <div class="detail-content">
-                        <p class="item-name">商品名</p>
-                    </div>
-                </div>
-
-                <div class="item-content">
-                    <a href="" class="item-link"></a>
-                    <div class="item-img__before"></div>
-                    <img src="asset" alt="商品画像" class="img-content" />
-                    <div class="detail-content">
-                        <p class="item-name">商品名</p>
-                    </div>
-                </div>
-
-                <div class="item-content">
-                    <a href="" class="item-link"></a>
-                    <div class="item-img__before"></div>
-                    <img src="asset" alt="商品画像" class="img-content" />
-                    <div class="detail-content">
-                        <p class="item-name">商品名</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </form>

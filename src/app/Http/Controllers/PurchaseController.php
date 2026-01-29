@@ -16,7 +16,14 @@ class PurchaseController extends Controller
     public function create(Item $item)
     {
         $profile = Auth::user()->profile;
-        return view('purchase', compact('item', 'profile'));
+
+        $address = session('purchase_address') ?? [
+            'postal_code' => $profile->postal_code,
+            'address'     => $profile->address,
+            'building'    => $profile->building,
+        ];
+
+        return view('purchase', compact('item', 'address'));
     }
 
     // 購入確定（★ここが唯一の store）
@@ -26,19 +33,26 @@ class PurchaseController extends Controller
             'payment_method' => 'required|in:card,convenience',
         ]);
 
-        $profile = Auth::user()->profile;
+        // ★ セッションの住所を優先、なければ profile
+        $address = session('purchase_address') ?? [
+            'postal_code' => Auth::user()->profile->postal_code,
+            'address'     => Auth::user()->profile->address,
+            'building'    => Auth::user()->profile->building,
+        ];
 
-        // ★ 購入情報を保存
         Purchase::create([
-            'item_id'     => $item->id,
-            'user_id'     => Auth::id(),
-            'image'       => $item->image,
-            'postal_code' => $profile->postal_code,
-            'address'     => $profile->address,
-            'building'    => $profile->building,
+            'item_id'        => $item->id,
+            'user_id'        => Auth::id(),
+            'image'          => $item->image,
+            'postal_code'    => $address['postal_code'],
+            'address'        => $address['address'],
+            'building'       => $address['building'],
+            'payment_method' => $request->payment_method,
         ]);
 
-        // ★ 支払い方法で Stripe へ分岐
+        // ★ 使い終わったら必ず消す（超重要）
+        session()->forget('purchase_address');
+
         if ($request->payment_method === 'card') {
             return redirect()->route('stripe.card', $item->id);
         }
@@ -106,9 +120,10 @@ class PurchaseController extends Controller
     // 住所更新
     public function updateAddress(AddressRequest $request, Item $item)
     {
-        $validated = $request->validated();
-
-        Auth::user()->profile->update($validated);
+        // セッションに一時保存
+        session([
+            'purchase_address' => $request->validated()
+        ]);
 
         return redirect()->route('purchase.create', $item->id);
     }
