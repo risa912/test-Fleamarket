@@ -18,7 +18,7 @@
             <h1 class="product-name">{{ $item->name }}</h1>
             <p class="brand">{{ $item->brand }}</p>
             <p class="price">
-                ¥{{ number_format($item->price) }} <span>（税込）</span>
+                ¥{{ number_format($item->price) }} <span class="price-tax">（税込）</span>
             </p>
             
             <div class="reaction">
@@ -26,7 +26,7 @@
                     <form action="{{ route('items.like', $item) }}" method="post" class="like-form">
                         @csrf
                         <button type="submit" class="like-button">
-                            <img class="like__img" src="{{ $hasLiked ? asset('images/Vector.png') : asset('images/icon_heart.svg') }}" alt="いいね">
+                            <img class="like__img" src="{{ $hasLiked ? asset('images/Vector.png') : asset('images/icon _heart_.png') }}" alt="いいね">
                             <span class="reaction-count">{{ $item->likes->count() }}</span>
                         </button>
                     </form>
