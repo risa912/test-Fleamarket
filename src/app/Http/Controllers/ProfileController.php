@@ -57,7 +57,7 @@ class ProfileController extends Controller
             $data
         );
 
-        return redirect()->route('mypage')->with('success', 'プロフィールを更新しました。');
+        return redirect()->route('index')->with('success', 'プロフィールを更新しました。');
     }
 
 }

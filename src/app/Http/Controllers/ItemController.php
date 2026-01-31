@@ -64,29 +64,43 @@ class ItemController extends Controller
     }
 
     // 商品詳細
-    public function show(Item $item)
+    public function show($item_id)
     {
+        $item = Item::findOrFail($item_id);
+
         $item->load([
             'condition',
             'categories',
             'comments.user.profile',
             'likes',
+            'purchases',
         ]);
 
         $hasLiked = false;
-
         if (auth()->check()) {
             $hasLiked = $item->likes()
                 ->where('user_id', auth()->id())
                 ->exists();
         }
 
-        return view('show', compact('item', 'hasLiked'));
+        $isPurchased = $item->purchases()->exists();
+
+        // ★ 自分の出品か？
+        $isOwner = auth()->check() && $item->user_id === auth()->id();
+
+        return view('show', compact(
+            'item',
+            'hasLiked',
+            'isPurchased',
+            'isOwner'
+        ));
     }
 
-    // いいね・コメント（認証必須）
-    public function toggleLike(Item $item)
+
+    // いいね（認証必須）
+    public function toggleLike($item_id)
     {
+        $item = Item::findOrFail($item_id);
         $user = auth()->user();
 
         $like = $item->likes()
@@ -104,8 +118,11 @@ class ItemController extends Controller
         return back();
     }
 
-    public function storeComment(CommentRequest $request, Item $item)
+    // コメント（認証必須）
+    public function storeComment(CommentRequest $request, $item_id)
     {
+        $item = Item::findOrFail($item_id);
+
         $item->comments()->create([
             'user_id' => auth()->id(),
             'comment' => $request->comment,

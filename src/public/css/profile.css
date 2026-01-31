@@ -37,6 +37,7 @@
     border-width: 2px;
     padding: 10px 30px;
     height: 45px;
+    text-decoration: none;
 }
 
 .profile-form__image-input {
@@ -175,14 +176,21 @@
 }
 
 @media screen and (min-width: 768px) and (max-width: 850px) {
+    .profile-form__user {
+        font-size: 28px;
+    }
+
     .item-contents {
-        justify-content: center;
         gap: 70px;
     }
 }
 
 
 @media screen and (min-width: 1400px) and (max-width: 1500px) {
+    .item-contents {
+        gap: 70px 30px;   
+    }
+
     .item-name {
         font-size: 22px;
         margin-top: 8px;

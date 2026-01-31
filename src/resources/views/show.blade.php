@@ -23,15 +23,16 @@
             
             <div class="reaction">
                 <div class="reaction-item">
-                    <form action="{{ route('items.like', $item) }}" method="post" class="like-form">
+                    <form action="{{ route('items.like', $item->id) }}" method="post" class="like-form">
                         @csrf
                         <button type="submit" class="like-button">
-                            <img class="like__img" src="{{ $hasLiked ? asset('images/Vector.png') : asset('images/icon _heart_.png') }}" alt="いいね">
+                            <img class="like__img" src="{{ $hasLiked ? asset('images/Vector.png') : asset('images/icon_heart.png') }}" alt="いいね">
                             <span class="reaction-count">{{ $item->likes->count() }}</span>
                         </button>
                     </form>
                 </div>
-                <form action="{{ route('items.comment', $item) }}" method="post">
+                <form action="{{ route('items.comment', $item->id) }}" method="post">
+                    @csrf
                     <div class="reaction-item">
                     <img class="comment__img" src="{{ asset('images/icon_comment_.svg') }}" alt="コメント">
                     <span class="reaction-count reaction-count--comment">
@@ -41,7 +42,26 @@
                 </form>
             </div>
 
-            <button class="show-form__btn show-form__btn--purchase"><a class="show-link" href="{{ route('purchase.create', $item->id) }}">購入手続きへ</a></button>
+            @if ($isPurchased)
+                {{-- 購入済み --}}
+                <button class="show-form__btn show-form__btn--disabled" disabled>
+                    購入済み
+                </button>
+
+            @elseif ($isOwner)
+                {{-- 自分の出品 --}}
+                <button class="show-form__btn show-form__btn--disabled" disabled>
+                    購入不可
+                </button>
+
+            @else
+                {{-- 購入可能 --}}
+                <button class="show-form__btn show-form__btn--purchase">
+                    <a class="show-link" href="{{ route('purchase.create', $item->id) }}">
+                        購入手続きへ
+                    </a>
+                </button>
+            @endif
 
             <section class="section">
                 <h2 class="section-tittle">商品説明</h2>

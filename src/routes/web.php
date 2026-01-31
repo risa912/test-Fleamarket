@@ -1,40 +1,51 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CommonController;
+use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\CreateController; 
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Http\Controllers\CreateController;
 use App\Http\Controllers\PurchaseController;
-use Illuminate\Http\Request;
 
-// 全商品一覧・マイリスト
+/*
+|--------------------------------------------------------------------------
+| 商品一覧
+|--------------------------------------------------------------------------
+*/
 Route::get('/', [ItemController::class, 'index'])->name('index');
-Route::get('/mylist', [ItemController::class, 'indexMylist'])->name('index.mylist');
 
-// 登録画面
+/*
+|--------------------------------------------------------------------------
+| 認証（登録・ログイン）
+|--------------------------------------------------------------------------
+*/
 Route::get('/register', function () {
     return view('auth.register');
 })->name('register.view');
 
 Route::post('/register', [AuthController::class, 'register'])->name('register');
+
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login.view');
 
-// ログイン・ログアウト処理
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
-// メール認証処理
+/*
+|--------------------------------------------------------------------------
+| メール認証
+|--------------------------------------------------------------------------
+*/
 Route::get('/email/verify', function () {
-    return view('auth.certification'); 
+    return view('auth.certification');
 })->middleware('auth')->name('verification.notice');
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();  
+    $request->fulfill();
     return redirect()->route('profile_edit');
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
@@ -43,63 +54,68 @@ Route::post('/email/verification-notification', function (Request $request) {
     return back()->with('message', '認証メールを再送信しました。');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+/*
+|--------------------------------------------------------------------------
+| 商品詳細・リアクション
+|--------------------------------------------------------------------------
+*/
+Route::get('/item/{item_id}', [ItemController::class, 'show'])
+    ->name('items.show');
 
-// マイページ
-Route::get('/mypage', [ProfileController::class, 'index'])
-    ->middleware(['auth', 'verified'])
-    ->name('mypage');
+Route::post('/items/{item_id}/comment', [ItemController::class, 'storeComment'])
+    ->middleware('auth')
+    ->name('items.comment');
 
-Route::get('/mypage/profile', [ProfileController::class, 'edit'])
-    ->middleware(['auth', 'verified'])
-    ->name('profile_edit');
+Route::post('/items/{item_id}/like', [ItemController::class, 'toggleLike'])
+    ->middleware('auth')
+    ->name('items.like');
 
-Route::post('/mypage/profile', [ProfileController::class, 'update'])
-    ->middleware(['auth', 'verified'])
-    ->name('profile_update');
-
-
-// 出品画面
+/*
+|--------------------------------------------------------------------------
+| 認証必須エリア
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->group(function () {
-    Route::get('/sell', [CreateController::class, 'create'])
-        ->name('sell');
 
-    Route::post('/sell', [CreateController::class, 'store'])
-        ->name('items.store');
-});
+    /*
+    | プロフィール
+    */
+    Route::get('/mypage', [ProfileController::class, 'index'])
+        ->middleware('verified')
+        ->name('mypage');
 
-// 商品詳細ページ
-Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
+    Route::get('/mypage/profile', [ProfileController::class, 'edit'])
+        ->middleware('verified')
+        ->name('profile_edit');
 
-// コメント投稿
-Route::post('/items/{item}/comment', [ItemController::class, 'storeComment'])
-    ->name('items.comment')
-    ->middleware('auth');
+    Route::post('/mypage/profile', [ProfileController::class, 'update'])
+        ->middleware('verified')
+        ->name('profile_update');
 
-// コメント・いいね
-Route::post('/items/{item}/like', [ItemController::class, 'toggleLike'])
-    ->name('items.like')
-    ->middleware('auth');
+    /*
+    | 商品出品
+    */
+    Route::get('/sell', [CreateController::class, 'create'])->name('sell');
+    Route::post('/sell', [CreateController::class, 'store'])->name('items.store');
 
-
-Route::middleware('auth')->group(function () {
-
-    // 商品購入画面
-    Route::get('/purchase/{item}', [PurchaseController::class, 'create'])
+    /*
+    | 商品購入
+    */
+    Route::get('/purchase/{item_id}', [PurchaseController::class, 'create'])
         ->name('purchase.create');
 
-    // 購入処理
-    Route::post('/purchase/{item}', [PurchaseController::class, 'store'])
+    Route::post('/purchase/{item_id}', [PurchaseController::class, 'store'])
         ->name('purchase.store');
 
-    // 配送先編集
-    Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])
+    Route::get('/purchase/address/{item_id}', [PurchaseController::class, 'editAddress'])
         ->name('address.edit');
 
-    // 配送先更新（保存）
-    Route::post('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])
+    Route::post('/purchase/address/{item_id}', [PurchaseController::class, 'updateAddress'])
         ->name('address.update');
 
-    // Stripe 決済
+    /*
+    | Stripe
+    */
     Route::get('/stripe/card/{item}', [PurchaseController::class, 'stripeCard'])
         ->name('stripe.card');
 

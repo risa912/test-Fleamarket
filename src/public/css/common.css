@@ -81,7 +81,7 @@ body {
     }
     
     .logo__img {
-        width: 90%;
+        width: 76%;
     }
 
     .header__nav {
@@ -91,6 +91,10 @@ body {
 
     .header__menu {
         gap: 10px;
+    }
+
+    .header__search-input {
+        width: auto;
     }
 
     .header__link {

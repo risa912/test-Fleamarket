@@ -21,7 +21,7 @@
 
         <div class="top-contents">
             @foreach ($items as $item)
-                <a href="{{ route('items.show', $item) }}" class="top-link">
+                <a href="{{ route('items.show', $item->id) }}" class="top-link">
                     <div class="top-content">
                         @if($item->purchases->count() > 0)
                             <span class="sold-label">Sold</span>

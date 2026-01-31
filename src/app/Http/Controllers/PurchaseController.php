@@ -3,18 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Purchase;
 use App\Http\Requests\AddressRequest;
+use App\Http\Requests\PurchaseRequest;
 use Illuminate\Support\Facades\Auth;
 use Stripe\Stripe;
 use Stripe\Checkout\Session;
-use App\Http\Requests\PurchaseRequest;
-use App\Models\Purchase;
 
 class PurchaseController extends Controller
 {
-    // 購入画面
-    public function create(Item $item)
+    /*
+    |--------------------------------------------------------------------------
+    | 購入画面
+    |--------------------------------------------------------------------------
+    */
+    public function create($item_id)
     {
+        $item = Item::findOrFail($item_id);
+
+        // ★ 購入済み商品は購入不可
+        if ($item->purchases()->exists()) {
+            abort(403, 'この商品はすでに購入されています');
+        }
+
         $profile = Auth::user()->profile;
 
         $address = session('purchase_address') ?? [
@@ -26,14 +37,24 @@ class PurchaseController extends Controller
         return view('purchase', compact('item', 'address'));
     }
 
-    // 購入確定（★ここが唯一の store）
-    public function store(PurchaseRequest $request, Item $item)
+    /*
+    |--------------------------------------------------------------------------
+    | 購入確定
+    |--------------------------------------------------------------------------
+    */
+    public function store(PurchaseRequest $request, $item_id)
     {
+        $item = Item::findOrFail($item_id);
+
+        // ★ 二重購入防止（POST直叩き対策）
+        if ($item->purchases()->exists()) {
+            abort(403, 'この商品はすでに購入されています');
+        }
+
         $request->validate([
             'payment_method' => 'required|in:card,convenience',
         ]);
 
-        // ★ セッションの住所を優先、なければ profile
         $address = session('purchase_address') ?? [
             'postal_code' => Auth::user()->profile->postal_code,
             'address'     => Auth::user()->profile->address,
@@ -50,7 +71,7 @@ class PurchaseController extends Controller
             'payment_method' => $request->payment_method,
         ]);
 
-        // ★ 使い終わったら必ず消す（超重要）
+        // ★ セッション削除
         session()->forget('purchase_address');
 
         if ($request->payment_method === 'card') {
@@ -60,9 +81,15 @@ class PurchaseController extends Controller
         return redirect()->route('stripe.convenience', $item->id);
     }
 
-    // カード決済
-    public function stripeCard(Item $item)
+    /*
+    |--------------------------------------------------------------------------
+    | カード決済
+    |--------------------------------------------------------------------------
+    */
+    public function stripeCard($item_id)
     {
+        $item = Item::findOrFail($item_id);
+
         Stripe::setApiKey(config('services.stripe.secret'));
 
         $session = Session::create([
@@ -85,9 +112,15 @@ class PurchaseController extends Controller
         return redirect($session->url);
     }
 
-    // コンビニ決済
-    public function stripeConvenience(Item $item)
+    /*
+    |--------------------------------------------------------------------------
+    | コンビニ決済
+    |--------------------------------------------------------------------------
+    */
+    public function stripeConvenience($item_id)
     {
+        $item = Item::findOrFail($item_id);
+
         Stripe::setApiKey(config('services.stripe.secret'));
 
         $session = Session::create([
@@ -110,21 +143,30 @@ class PurchaseController extends Controller
         return redirect($session->url);
     }
 
-    // 住所変更画面
-    public function editAddress(Item $item)
+    /*
+    |--------------------------------------------------------------------------
+    | 住所変更画面
+    |--------------------------------------------------------------------------
+    */
+    public function editAddress($item_id)
     {
+        $item = Item::findOrFail($item_id);
         $profile = Auth::user()->profile;
+
         return view('address', compact('item', 'profile'));
     }
 
-    // 住所更新
-    public function updateAddress(AddressRequest $request, Item $item)
+    /*
+    |--------------------------------------------------------------------------
+    | 住所更新
+    |--------------------------------------------------------------------------
+    */
+    public function updateAddress(AddressRequest $request, $item_id)
     {
-        // セッションに一時保存
         session([
             'purchase_address' => $request->validated()
         ]);
 
-        return redirect()->route('purchase.create', $item->id);
+        return redirect()->route('purchase.create', $item_id);
     }
 }
