@@ -20,8 +20,7 @@ class PurchaseController extends Controller
     public function create($item_id)
     {
         $item = Item::findOrFail($item_id);
-
-        // ★ 購入済み商品は購入不可
+        
         if ($item->purchases()->exists()) {
             abort(403, 'この商品はすでに購入されています');
         }
@@ -46,7 +45,6 @@ class PurchaseController extends Controller
     {
         $item = Item::findOrFail($item_id);
 
-        // ★ 二重購入防止（POST直叩き対策）
         if ($item->purchases()->exists()) {
             abort(403, 'この商品はすでに購入されています');
         }
@@ -71,7 +69,6 @@ class PurchaseController extends Controller
             'payment_method' => $request->payment_method,
         ]);
 
-        // ★ セッション削除
         session()->forget('purchase_address');
 
         if ($request->payment_method === 'card') {

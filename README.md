@@ -238,3 +238,11 @@ php artisan storage:link
 - 開発環境：http://localhost/
 - phpMyAdmin:：http://localhost:8080/
 
+## 使用技術（実行環境）
+- PHP 8.1.34
+- Laravel 10.49.1
+- MySQL 8.0.26
+- Docker / Docker Compose
+- MailHog（メール送信確認）
+- Stripe（テスト環境）
+

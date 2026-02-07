@@ -85,7 +85,6 @@ class ItemController extends Controller
 
         $isPurchased = $item->purchases()->exists();
 
-        // ★ 自分の出品か？
         $isOwner = auth()->check() && $item->user_id === auth()->id();
 
         return view('show', compact(
@@ -122,6 +121,10 @@ class ItemController extends Controller
     public function storeComment(CommentRequest $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
+
+        if ($item->purchases()->exists() || $item->user_id === auth()->id()) {
+            abort(403, 'この商品にはコメントできません');
+        }
 
         $item->comments()->create([
             'user_id' => auth()->id(),

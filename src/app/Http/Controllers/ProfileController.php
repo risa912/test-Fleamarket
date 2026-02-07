@@ -14,7 +14,7 @@ class ProfileController extends Controller
     {
         $user = Auth::user()->load('profile');
 
-        $page = $request->query('page', 'sell'); // デフォルトは sell
+        $page = $request->query('page', 'sell'); 
 
         if ($page === 'buy') {
             // 購入した商品一覧

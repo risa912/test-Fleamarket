@@ -23,7 +23,6 @@ class CreateController extends Controller
     {
         $data = $request->validated();
 
-        // ★ 正解：storage を付けない
         $path = $request->file('image')->store('items', 'public');
         $data['image'] = $path;
 

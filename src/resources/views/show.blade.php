@@ -104,22 +104,33 @@
 
             <section class="section section--another">
                 <h2 class="section-tittle section-tittle--another">商品へのコメント</h2>
-               <form action="{{ route('items.comment', $item->id) }}" method="post">
-                    @csrf
-                    <div class="show-form__group">
-                        <textarea class="show-form__textarea" name="comment" cols="30"
-                            rows="5">
-                        </textarea>
-                        <p class="show-form__error-message">
-                            @error('comment')
-                                {{ $message }}
-                            @enderror
-                        </p>
-                    </div>
-                    <div class="show-form__btn-inner">
-                        <button class="show-form__btn btn" type="submit">コメントを送信する</button>
-                    </div>
-                </form>
+                @if ($isPurchased || $isOwner)
+                    <textarea class="show-form__textarea" disabled>
+                        購入済みの商品にはコメントできません
+                    </textarea>
+
+                        <div class="show-form__btn-inner">
+                            <button class="show-form__btn show-form__btn--disabled" disabled>
+                                コメント送信不可
+                            </button>
+                        </div>
+                    @else
+                    <form action="{{ route('items.comment', $item->id) }}" method="post">
+                        @csrf
+                        <div class="show-form__group">
+                            <textarea class="show-form__textarea" name="comment" cols="30" rows="5">
+                            </textarea>
+                            <p class="show-form__error-message">
+                                @error('comment')
+                                    {{ $message }}
+                                @enderror
+                            </p>
+                        </div>
+                        <div class="show-form__btn-inner">
+                            <button class="show-form__btn btn" type="submit">コメントを送信する</button>
+                        </div>
+                    </form>
+                @endif
             </section>
         </div>
     </div>
