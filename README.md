@@ -2,8 +2,8 @@
 
 ## 環境構築
 **Dockerビルド**
-1. `git@github.com:risa912/test-Fleamarket.git`
-2. cd coachtech/fleamaeket
+1. `git clone git@github.com:risa912/test-Fleamarket.git`
+2. cd test-Fleamarket
 3. DockerDesktopアプリを立ち上げる 
 4. Docker コンテナの起動（初回はビルド）
 ```bash
@@ -49,8 +49,8 @@ MAIL_FROM_NAME="${APP_NAME}"
 ## Stripe（決済機能）設定
 1. .envに以下のStripe（決済）設定（テスト環境）
 ``` text
-STRIPE_KEY=pk_test_xxxxxxxxxxxxx
-STRIPE_SECRET=sk_test_xxxxxxxxxxxxx
+STRIPE_KEY=pk_test_xxxxxxxxxxxxxxxxxxxxx
+STRIPE_SECRET=sk_test_xxxxxxxxxxxxxxxxxxxxx
 ```
 2. docker-compose.ymlに以下の設定を追加 （MailHog）
 ``` text
@@ -137,8 +137,99 @@ php artisan storage:link
 - Stripe（テスト環境）
 
 ## テーブル設計
-![alt](ファイル名.png)
-![alt](ファイル名.png)
+### users テーブル
+| カラム名 | 型 | PK | UNIQUE | NOT NULL | 外部キー |
+|--------|----|----|--------|----------|----------|
+| id | bigint unsigned | ○ | | | |
+| name | varchar(255) | | | ○ | |
+| email | varchar(255) | | ○ | ○ | |
+| password | varchar(255) | | | ○ | |
+| created_at | timestamp | | | | |
+| updated_at | timestamp | | | | |
+
+### items テーブル
+| カラム名 | 型 | PK | NOT NULL | 外部キー |
+|--------|----|----|----------|----------|
+| id | bigint unsigned | ○ | | |
+| name | varchar(255) | | ○ | |
+| price | integer | | ○ | |
+| brand | varchar(255) | | | |
+| description | varchar(255) | | ○ | |
+| image | varchar(255) | | ○ | |
+| condition_id | bigint unsigned | | ○ | conditions(id) |
+| user_id | bigint unsigned | | ○ | users(id) |
+| created_at | timestamp | | | |
+| updated_at | timestamp | | | |
+
+### categories テーブル
+| カラム名 | 型 | PK | NOT NULL |
+|--------|----|----|----------|
+| id | bigint unsigned | ○ | |
+| name | varchar(255) | | ○ |
+| created_at | timestamp | | |
+| updated_at | timestamp | | |
+
+### item_categories テーブル
+| カラム名 | 型 | PK | NOT NULL | 外部キー |
+|--------|----|----|----------|----------|
+| id | bigint unsigned | ○ | | |
+| item_id | bigint unsigned | | ○ | items(id) |
+| category_id | bigint unsigned | | ○ | categories(id) |
+| created_at | timestamp | | | |
+| updated_at | timestamp | | | |
+
+### conditions テーブル
+| カラム名 | 型 | PK | NOT NULL |
+|--------|----|----|----------|
+| id | bigint unsigned | ○ | |
+| condition | varchar(255) | | ○ |
+| created_at | timestamp | | |
+| updated_at | timestamp | | |
+
+### item_likes テーブル
+| カラム名 | 型 | PK | NOT NULL | 外部キー |
+|--------|----|----|----------|----------|
+| id | bigint unsigned | ○ | | |
+| user_id | bigint unsigned | | ○ | users(id) |
+| item_id | bigint unsigned | | ○ | items(id) |
+| created_at | timestamp | | | |
+| updated_at | timestamp | | | |
+
+### comments テーブル
+| カラム名 | 型 | PK | NOT NULL | 外部キー |
+|--------|----|----|----------|----------|
+| id | bigint unsigned | ○ | | |
+| user_id | bigint unsigned | | ○ | users(id) |
+| item_id | bigint unsigned | | ○ | items(id) |
+| comment | varchar(255) | | ○ | |
+| created_at | timestamp | | | |
+| updated_at | timestamp | | | |
+
+### profiles テーブル
+| カラム名 | 型 | PK | NOT NULL | 外部キー |
+|--------|----|----|----------|----------|
+| id | bigint unsigned | ○ | | |
+| name | varchar(255) | | ○ | |
+| image | varchar(255) | | ○ | |
+| postal_code | varchar(255) | | ○ | |
+| address | varchar(255) | | ○ | |
+| building | varchar(255) | | | |
+| user_id | bigint unsigned | | ○ | users(id) |
+| created_at | timestamp | | | |
+| updated_at | timestamp | | | |
+
+### purchases テーブル
+| カラム名 | 型 | PK | NOT NULL | 外部キー |
+|--------|----|----|----------|----------|
+| id | bigint unsigned | ○ | | |
+| image | varchar(255) | | ○ | |
+| postal_code | varchar(255) | | ○ | |
+| address | varchar(255) | | ○ | |
+| building | varchar(255) | | | |
+| item_id | bigint unsigned | | ○ | items(id) |
+| user_id | bigint unsigned | | ○ | users(id) |
+| created_at | timestamp | | | |
+| updated_at | timestamp | | | |
 
 ## ER図
 ![alt](ファイル名.png)

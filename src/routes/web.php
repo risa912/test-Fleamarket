@@ -16,6 +16,11 @@ use App\Http\Controllers\PurchaseController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [ItemController::class, 'index'])->name('index');
+Route::middleware(['auth'])->group(function () {
+    // ログインユーザーのマイリスト
+    Route::get('/mylist', [ItemController::class, 'myList'])
+        ->name('mylist.index');
+});
 
 /*
 |--------------------------------------------------------------------------

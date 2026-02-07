@@ -15,7 +15,8 @@ src/storage/logs/*
 
 # Environment
 .env
-.env.backup
+.env.*
+!.env.example
 
 # IDE
 .idea/
