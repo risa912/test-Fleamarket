@@ -232,7 +232,7 @@ php artisan storage:link
 | updated_at | timestamp | | | |
 
 ## ER図
-![alt](ファイル名.png)
+![alt](er_diagram.png)
 
 ## URL
 - 開発環境：http://localhost/
