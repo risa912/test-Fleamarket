@@ -1,2 +1,8 @@
 *
 !.gitignore
+!items/
+!items/**
+!profile_images/
+!profile_images/**
+!fruit_img/
+!fruit_img/**
